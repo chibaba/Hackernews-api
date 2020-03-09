@@ -12,6 +12,23 @@ const PARAM_SEARCH = 'query=';
 
 const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`
 
+const Search = ({
+  value,
+  onChange,
+  onSubmit,
+  children
+}) =>
+  <form onSubmit={onSubmit}>
+    <input
+      type="text"
+      value={value}
+      onChange={onChange}
+      />
+      <button type="submit">
+        { children }
+      </button>
+  </form>
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -44,9 +61,10 @@ class App extends Component {
       this.fetchSearchTopStories(searchTerm);
   }
 
-  onSearchSubmit() {
+  onSearchSubmit(event) {
     const {searchTerm} = this.state;
     this.fetchSearchTopStories(searchTerm);
+    event.preventDefault();
   }
   render() {
     const { searchTerm, result } = this.state
@@ -63,10 +81,17 @@ class App extends Component {
         </Search>
 
       </div>
+
+    const Table = ({ list, onDismiss}) =>
+      <div className="table">
+        {list.map(item =>
+
+        )}
+      </div>
       { result &&
         <Table
           list={result.hits}
-          pattern={searchTerm}
+          //pattern={searchTerm}
           onDismiss={this.onDismiss}
           />
           

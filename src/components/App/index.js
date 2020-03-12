@@ -6,4 +6,4 @@ import {
     PARAM_SEARCH,
     PARAM_PAGE,
     PARAM_HPP,
-    } from '../constants/index.js'
+    } from '../constants'

@@ -20,22 +20,36 @@ const PARAM_HPP = 'hitsPerPage=';
 
 const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}`;
 
+class Search extends Component {
+  componentDidMount() {
+    if(this.input) {
+      this.input.focus();
+    }
+  }
+render() {
 const Search = ({
   value,
   onChange,
   onSubmit,
   children
-}) =>
+}) => {
+  let input
+ return (
   <form onSubmit={onSubmit}>
     <input
       type="text"
       value={value}
       onChange={onChange}
+      ref={(node) => input = node}
       />
       <button type="submit">
         { children }
       </button>
   </form>
+ );
+}
+}
+}
 
   const Button = ({
     onClick,
@@ -83,7 +97,8 @@ class App extends Component {
     results : null,
     searchKey: '',
     searchTerm: DEFAULT_QUERY,
-    error: null
+    error: null,
+    isLoading: false
     };
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
@@ -112,13 +127,10 @@ class App extends Component {
 
     this.setState({
       results: { ...results,
-        [searchKey]:  { hits: updatedHits, page} }
+        [searchKey]:  { hits: updatedHits, page} },
+        isLoading: false
     });
   }
-  // componentDidMount() {
-  //   const { searchTerm } = this.state;
-  //   this.fetchSearchTopStories(searchTerm);
-
 
     fetchSearchTopStories(searchTerm, page = 0) {
     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)

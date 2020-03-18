@@ -63,6 +63,16 @@ const Search = ({
     {children}
   </button>
 
+  const Loading = () =>
+  <div>Loading ...</div>
+
+  const withLoading = (Component) => ({isLoading, ...rest}) =>
+  isLoading
+  ? <Loading />
+  : <Component {...rest} />
+
+  const ButtonWithLoading = withLoading(Button);
+
   Button.defaultProps = {
     className: ''
   }
@@ -93,13 +103,25 @@ class App extends Component {
   _isMounted = false;
   constructor(props) {
     super(props);
-    this.state = {
-    results : null,
-    searchKey: '',
-    searchTerm: DEFAULT_QUERY,
-    error: null,
-    isLoading: false
-    };
+
+    // render() {
+    //   const {
+   
+        // results,
+        // searchKey,
+        // searchTerm,
+        // error,
+        // isLoading
+        //   } = this.state;
+        this.state = {
+          results: null,
+          searchKey: '',
+          searchTerm: DEFAULT_QUERY,
+          error: null,
+          isLoading: false,
+        }
+        
+    
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
@@ -108,7 +130,8 @@ class App extends Component {
     this.onDismiss = this.onDismiss.bind(this)
 
   }
-
+ 
+  
   needsToSearchTopStories(searchTerm) {
     return !this.state.results[searchTerm]; 
   }
@@ -132,13 +155,17 @@ class App extends Component {
     });
   }
 
+
     fetchSearchTopStories(searchTerm, page = 0) {
+      this.setState({ isLoading: true });
+
     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(result => this._isMounted && this.setSearchTopStories(result.data))
       .catch(error => this._isMounted && this.setState({error}));
     }  // componentDidMount() {
       //   const { searchTerm } = this.state;
       //   this.fetchSearchTopStories(searchTerm);
+  
     componentDidMount() {
       this._isMounted = true;
       const { searchTerm } = this.state;
@@ -148,7 +175,7 @@ class App extends Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
-
+  
   onSearchSubmit(event) {
     const {searchTerm} = this.state;
     this.setState({ searchKey: searchTerm })
@@ -158,6 +185,7 @@ class App extends Component {
     }
     event.preventDefault();
   }
+
   onDismiss(id) {
     const { searchKey, results } = this.state;
     const {hits, page } = results[searchKey];
@@ -172,8 +200,9 @@ class App extends Component {
       }
     })
   }
+
   render() {
-    const { searchTerm, results,searchKey, error } = this.state;
+    const { searchTerm, results,searchKey, error, isLoading } = this.state;
     const page = (result && results[searchKey] &&
                   results[searchKey].page) || 0;
     const list = (
@@ -199,6 +228,7 @@ class App extends Component {
       {
         error
         ? <div className= "interactions">
+        
           <p> Something went wrong </p>
         </div>
      : <Table
@@ -207,15 +237,21 @@ class App extends Component {
       }
       
           <div className="interactions">
+          {
+            isLoading
+            ? <Loading />
+            : 
             <Button onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}>
               More
             </Button>
+          }
           </div>
      
       </div>
-    )
+    );
   }
 }
+
 
 export default App;
 

@@ -1,5 +1,6 @@
 import React, {Component } from 'react';
 import axios from 'axios';
+import { sortBy } from 'loadash';
 import PropTypes from 'prop-types';
 
 import './App.css';
@@ -98,6 +99,13 @@ const Search = ({
     ).isRequired,
     onDismiss: PropTypes.func.isRequired,
   };
+  const SORTS = {
+    NONE: list => list,
+    TITLE: list =>sortBy(list, 'title'),
+    AUTHOR: list=>sortBy(list, 'author'),
+    COMMENTS: list=>sortBy(list, 'num_comments').reverse(),
+    POINTS: list=>sortBy(list, 'points').reverse(),
+  };
 
 class App extends Component {
   _isMounted = false;
@@ -119,6 +127,7 @@ class App extends Component {
           searchTerm: DEFAULT_QUERY,
           error: null,
           isLoading: false,
+          sortKey: 'NONE',
         }
         
     
@@ -127,7 +136,8 @@ class App extends Component {
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
-    this.onDismiss = this.onDismiss.bind(this)
+    this.onDismiss = this.onDismiss.bind(this);
+    this.onSort = this.onDismiss.bind(this);
 
   }
  
@@ -237,14 +247,12 @@ class App extends Component {
       }
       
           <div className="interactions">
-          {
-            isLoading
-            ? <Loading />
-            : 
-            <Button onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}>
-              More
-            </Button>
-          }
+          <ButtonWithLoading
+           isLoading={isLoading}
+           onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+             More
+           </ButtonWithLoading>
+          
           </div>
      
       </div>

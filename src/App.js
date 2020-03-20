@@ -266,6 +266,14 @@ const Search = ({
 }
 }
 
+const Sort = ({ sortKey, onSort, children }) =>
+  <Button
+     onClick={() => onSort(sortKey)}
+     className="button-inline"
+     >
+       {children}
+     </Button>
+
   
     const Table = ({ list, sortKey, onSort, onDismiss }) => 
     
@@ -325,6 +333,7 @@ const Search = ({
         </div>
         )}
       </div>
+
     
   
 

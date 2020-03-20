@@ -269,16 +269,29 @@ const Search = ({
 }
 }
 
-const Sort = ({ sortKey, onSort, children }) =>
+const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
+  const sortClass = ['button-inline'];
+
+  if(sortKey === activeSortKey) {
+    sortClass.push('button-active')
+  }
+  return (
   <Button
      onClick={() => onSort(sortKey)}
-     className="button-inline"
+     className= {sortClass.join(' ')}
      >
        {children}
      </Button>
+     )
+}
 
   
-    const Table = ({ list, sortKey, onSort, onDismiss }) => 
+    const Table = ({ list, sortKey, isSortReverse, onSort, onDismiss }) => {
+      const sortedList = SORTS[sortKey](list);
+      const reverseSortedList = isSortReverse
+      ?  sortedList.reverse()
+      : sortedList;
+      return (
     
       <div className="table">
       <div className="table-header">
@@ -286,6 +299,7 @@ const Sort = ({ sortKey, onSort, children }) =>
           <Sort
           sortKey={'TITLE'}
           onSort={onSort}
+          activeSortKey={sortKey}
           >
             Title
           </Sort>
@@ -294,6 +308,7 @@ const Sort = ({ sortKey, onSort, children }) =>
           <Sort
            sortKey={'AUTHOR'}
            onSort={onSort}
+           activeSortKey={sortKey}
            >
              Author
            </Sort>
@@ -302,6 +317,7 @@ const Sort = ({ sortKey, onSort, children }) =>
           <Sort
           sortKey={'COMMENTS'}
           onSort={onSort}
+          activeSortKey={sortKey}
           >
             Comments
           </Sort>
@@ -310,6 +326,7 @@ const Sort = ({ sortKey, onSort, children }) =>
           <Sort
           sortKey={'POINTS'}
           onSort={onSort}
+          activeSortKey={sortKey}
           >
             Points
           </Sort>
@@ -318,7 +335,7 @@ const Sort = ({ sortKey, onSort, children }) =>
           Archive
         </span>
       </div>
-              { SORTS[sortKey](list).map(item =>
+              { reverseSortedList.map(item =>
         <div key={item.objectID} className="table-row">
         <span style={{ width: '40%'}}>
           <a href={item.url}>{item.title}</a>
@@ -336,8 +353,9 @@ const Sort = ({ sortKey, onSort, children }) =>
         </div>
         )}
       </div>
+      );
 
-    
+              }
   
 
 

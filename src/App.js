@@ -21,36 +21,7 @@ const PARAM_HPP = 'hitsPerPage=';
 
 const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}`;
 
-class Search extends Component {
-  componentDidMount() {
-    if(this.input) {
-      this.input.focus();
-    }
-  }
-render() {
-const Search = ({
-  value,
-  onChange,
-  onSubmit,
-  children
-}) => {
-  let input
- return (
-  <form onSubmit={onSubmit}>
-    <input
-      type="text"
-      value={value}
-      onChange={onChange}
-      ref={(node) => input = node}
-      />
-      <button type="submit">
-        { children }
-      </button>
-  </form>
- );
-}
-}
-}
+
 
   const Button = ({
     onClick,
@@ -137,7 +108,7 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
-    this.onSort = this.onDismiss.bind(this);
+    this.onSort = this.onSort.bind(this);
 
   }
  
@@ -210,9 +181,12 @@ class App extends Component {
       }
     })
   }
+  onSort(sortKey) {
+    this.setState({ sortKey });
+  }
 
   render() {
-    const { searchTerm, results,searchKey, error, isLoading } = this.state;
+    const { searchTerm, results,searchKey, error, isLoading,sortKey } = this.state;
     const page = (result && results[searchKey] &&
                   results[searchKey].page) || 0;
     const list = (
@@ -243,6 +217,8 @@ class App extends Component {
         </div>
      : <Table
         list={list}
+        sortKey={sortKey}
+        onSort={this.onSort}
         onDismiss ={this.onDismiss} />
       }
       
@@ -259,6 +235,62 @@ class App extends Component {
     );
   }
 }
+class Search extends Component {
+  componentDidMount() {
+    if(this.input) {
+      this.input.focus();
+    }
+  }
+render() {
+const Search = ({
+  value,
+  onChange,
+  onSubmit,
+  children
+}) => {
+  let input
+ return (
+  <form onSubmit={onSubmit}>
+    <input
+      type="text"
+      value={value}
+      onChange={onChange}
+      ref={(node) => input = node}
+      />
+      <button type="submit">
+        { children }
+      </button>
+  </form>
+ );
+}
+}
+}
+
+  
+    const Table = ({ list, pattern, onDismiss }) => this.props;
+    
+      <div className="table">
+        {list.filter(isSearched(pattern)).map(item =>
+        <div key={item.objectID} className="table-row">
+        <span style={{ width: '40%'}}>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span style={{ width : '30%'}}>{item.author}</span>
+        <span style={{ width: '10%'}}>{item.num_comments}</span>
+        <span class={{ width: '10%'}}>{item.points}</span>
+        <span style={{ width: '10%'}}>
+          <Button onClick={() => onDismiss(item.objectID)}
+            className="button-inline"
+          >
+            Dismiss
+          </Button>
+        </span>
+        </div>
+        )}
+      </div>
+    
+  
+
 
 
 export default App;

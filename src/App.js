@@ -99,7 +99,8 @@ class App extends Component {
           error: null,
           isLoading: false,
           sortKey: 'NONE',
-        }
+          isSortReverse: false,
+        };
         
     
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
@@ -182,7 +183,9 @@ class App extends Component {
     })
   }
   onSort(sortKey) {
-    this.setState({ sortKey });
+    const isSortReverse = this.state.sortKey === sortKey && !this.state.isSortReverse;
+    this.setState({ sortKey, isSortReverse})
+    this.setState({ sortKey, isSortReverse });
   }
 
   render() {

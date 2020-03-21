@@ -2,6 +2,7 @@ import React, {Component } from 'react';
 import axios from 'axios';
 import { sortBy } from 'loadash';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import './App.css';
 
@@ -270,15 +271,18 @@ const Search = ({
 }
 
 const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
-  const sortClass = ['button-inline'];
+  const sortClass = classNames(
+    'button-inline',
+    {'button-active': sortKey === activeSortKey}
+  );
 
-  if(sortKey === activeSortKey) {
-    sortClass.push('button-active')
-  }
+  // if(sortKey === activeSortKey) {
+  //   sortClass.push('button-active')
+  // }
   return (
   <Button
      onClick={() => onSort(sortKey)}
-     className= {sortClass.join(' ')}
+     className= { sortClass}
      >
        {children}
      </Button>
@@ -286,7 +290,19 @@ const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
 }
 
   
-    const Table = ({ list, sortKey, isSortReverse, onSort, onDismiss }) => {
+    class Table extends Component {
+      render () {
+        const {
+          list,
+          sortKey,
+          isSortReverse,
+          onSort,
+          onDismiss,
+        } = this.props;
+
+            
+
+    
       const sortedList = SORTS[sortKey](list);
       const reverseSortedList = isSortReverse
       ?  sortedList.reverse()
@@ -356,6 +372,7 @@ const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
       );
 
               }
+            }
   
 
 
